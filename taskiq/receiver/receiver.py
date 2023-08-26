@@ -195,12 +195,13 @@ class Receiver:
         # because we want to update them with
         # kwargs resolved by dependency injector.
         kwargs = {}
+        context = Context(message, self.broker)
         if dependency_graph:
             # Create a context for dependency resolving.
             broker_ctx = self.broker.custom_dependency_context
             broker_ctx.update(
                 {
-                    Context: Context(message, self.broker),
+                    Context: context,
                     TaskiqState: self.broker.state,
                 },
             )
@@ -261,7 +262,7 @@ class Receiver:
         # Assemble result.
         result: "TaskiqResult[Any]" = TaskiqResult(
             is_err=found_exception is not None,
-            log=None,
+            log=context.log,
             return_value=returned,
             execution_time=round(execution_time, 2),
             error=found_exception,
