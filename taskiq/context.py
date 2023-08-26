@@ -16,6 +16,7 @@ class Context:
         self.broker = broker
         self.state: "TaskiqState" = None  # type: ignore
         self.state = broker.state
+        self.log = ""
 
     async def requeue(self) -> None:
         """
